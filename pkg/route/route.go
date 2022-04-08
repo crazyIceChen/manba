@@ -189,6 +189,23 @@ OUTER:
 				}
 
 				if !item.node.isMatchAllConstString() {
+					//if item.children>1，find '*'，make ‘*’ last match ，Match specific strings first
+					if len(item.children) > 1 {
+						var anyitem *routeItem
+						var children []*routeItem
+						for _, child := range item.children {
+							if string(child.node.value) == "*" {
+								anyitem = child
+							} else {
+								children = append(children, child)
+							}
+						}
+						if anyitem != nil {
+							children = append(children, anyitem)
+						}
+						item.children = children
+
+					}
 					target = item.children // find in children
 				}
 
